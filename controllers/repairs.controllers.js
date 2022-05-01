@@ -1,12 +1,15 @@
 const { Repair } = require('../models/repair.model')
-
+const {User} = require('../models/user.model')
 
 const getAllPendingRepairs = async (req, res) => {
   try {
     //SELECT * from users
-    const repairs = await Repair.findAll({where: {
-      status: 'pending'
-    }});
+    const repairs = await Repair.findAll({
+      where: {
+      status: 'pending',
+      },
+      include: [{ model: User }],
+    });
 
     res.status(200).json({
       repairs
@@ -19,9 +22,13 @@ const getAllPendingRepairs = async (req, res) => {
 
 const createAppointment = async (req, res) => {
   try {
-  const {date, userId} = req.body
+    const { date,
+      userId,
+      computerNumber,
+      comments
+    } = req.body
 
-  const newAppointment = await Repair.create({ date, userId });
+  const newAppointment = await Repair.create({ date, userId,computerNumber, comments});
 
   res.status(201).json({ newAppointment });
   } catch (error) {

@@ -8,6 +8,10 @@ const { db } = require('./utils/database');
 const {usersRouter} = require('./routes/users.routes')
 const {repairsRouter} = require('./routes/repairs.routes')
 
+//import Models 
+const { User } = require('./models/user.model')
+const { Repair } = require('./models/repair.model')
+
 //init express app
 const app = express()
 
@@ -24,7 +28,12 @@ app.use('/api/v1/repairs', repairsRouter)
 //autenticando base de datos
 db.authenticate()
   .then(()=> console.log('exitosa la conexion'))
-  .catch((err) =>  console.log(err))
+  .catch((err) => console.log(err))
+  
+// 1 User <----> M repairs
+User.hasMany(Repair);
+Repair.belongsTo(User);
+
 
 //sincronizar modelos 
 db.sync()
@@ -34,7 +43,7 @@ db.sync()
 // Spin up server
 
 //define the port
-const PORT = 9000
+const PORT = process.env.PORT || 9000
 //start server and listen request
 app.listen(PORT, () => {
   console.log(`server running on PORT ${PORT}`)
