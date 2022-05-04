@@ -1,8 +1,9 @@
 const { Repair } = require('../models/repair.model')
-const {User} = require('../models/user.model')
+const { User } = require('../models/user.model')
 
-const getAllPendingRepairs = async (req, res) => {
-  try {
+const { catchAsync } = require('../utils/catchAsync');
+
+const getAllPendingRepairs = catchAsync(async (req, res) => {
     //SELECT * from users
     const repairs = await Repair.findAll({
       where: {
@@ -14,15 +15,10 @@ const getAllPendingRepairs = async (req, res) => {
     res.status(200).json({
       repairs
     });
+});
 
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-const createAppointment = async (req, res) => {
-  try {
-    const { date,
+const createAppointment = catchAsync(async (req, res) => {
+  const { date,
       userId,
       computerNumber,
       comments
@@ -31,14 +27,9 @@ const createAppointment = async (req, res) => {
   const newAppointment = await Repair.create({ date, userId,computerNumber, comments});
 
   res.status(201).json({ newAppointment });
-  } catch (error) {
-    console.log(error)
-  }
-}
+});
 
-const getPendingRepairByID = async (req, res) => {
-
-  try {
+const getPendingRepairByID = catchAsync(async (req, res) => {
 
     //middleware added new data to request - we detructure here
     const { repair } = req
@@ -46,13 +37,10 @@ const getPendingRepairByID = async (req, res) => {
     res.status(200).json({
       repair
     });
-  } catch (error) {
-    console.log(error)
-  }
-}
+});
 
-const updateRepairStatus = async (req, res) => {
-  try {
+const updateRepairStatus = catchAsync(async (req, res) => {
+
     const { repair } = req
 
     //fields to update
@@ -64,22 +52,16 @@ const updateRepairStatus = async (req, res) => {
     
     await repair.update({status})
     res.status(200).json({ status: 'success' });
-  } catch (error) {
-    console.log(error);
-  }
-}
+});
 
-const cancelRepair = async (req, res) => {
-  try {
+const cancelRepair = catchAsync(async (req, res) => {
+
     const { repair } = req
     
     await repair.update({status: 'canceled'})
 
     res.status(200).json({ status: 'success' });
-  } catch (error) {
-    console.log(error);
-  }
-}
+});
 
 module.exports = {
   getAllPendingRepairs,

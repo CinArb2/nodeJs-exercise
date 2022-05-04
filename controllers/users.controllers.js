@@ -32,8 +32,6 @@ const createNewUser = catchAsync(async (req, res, next) => {
 
 const getUserByID = catchAsync(async (req, res, next) => {
 
-
-    //middleware added new data to request - we detructure here
     const { user } = req
     
     res.status(200).json({

@@ -47,9 +47,9 @@ db.sync()
 	.catch(err => console.log(err));
 
 // Spin up server
-
 //define the port
 const PORT = process.env.PORT || 9000
+
 //start server and listen request
 app.listen(PORT, () => {
   console.log(`server running on PORT ${PORT}`)

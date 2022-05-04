@@ -1,5 +1,9 @@
 const { body, validationResult } = require('express-validator');
 
+const { AppError } = require('../utils/appError');
+
+
+
 const createUserValidations = [
   body('name')
     .notEmpty()
@@ -31,7 +35,7 @@ const createRepairValidations = [
     .notEmpty()
     .withMessage('comments cannot be empty')
     .isLength({ min: 8, max: 100 })
-    .withMessage('comments must be at least 8 characters long and maximum 32 characters')
+    .withMessage('comments must be at least 8 characters long and maximum 100 characters')
   ,
 ];
 
@@ -39,14 +43,12 @@ const checkValidations = (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
+
     const messages = errors.array().map(({ msg }) => msg);
 
     const errorMsg = messages.join('. ');
 
-    return res.status(400).json({
-      status: 'error',
-      message: errorMsg,
-    });
+    return next(new AppError(errorMsg, 404));
   }
 
   next();
