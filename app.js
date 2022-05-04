@@ -4,6 +4,9 @@ const express = require('express')
 // Utils - connecting to database
 const { db } = require('./utils/database');
 
+// Controllers
+const { globalErrorHandler } = require('./controllers/error.controllers');
+
 //import routers
 const {usersRouter} = require('./routes/users.routes')
 const {repairsRouter} = require('./routes/repairs.routes')
@@ -21,9 +24,12 @@ app.use(express.json());
 //ENDPOINTS
 //http://localhost:9000/api/v1/users - users endpoint
 app.use('/api/v1/users', usersRouter)
-
 //http://localhost:9000/api/v1/repairs - repairs endpoint
 app.use('/api/v1/repairs', repairsRouter)
+
+
+//GLOBAL ERROR HANDLES
+app.use('*', globalErrorHandler)
 
 //autenticando base de datos
 db.authenticate()

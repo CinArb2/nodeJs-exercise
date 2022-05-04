@@ -1,22 +1,20 @@
 const { User } = require('../models/user.model')
 
+// Utils
+const { catchAsync } = require('../utils/catchAsync');
 
-const getAllUsers = async (req, res) => {
-  try {
-    //SELECT * from users
-    const users = await User.findAll();
 
-    res.status(200).json({
-      users
-    });
+const getAllUsers = catchAsync(async (req, res, next) => {
+  //SELECT * from users
+  const users = await User.findAll();
 
-  } catch (error) {
-    console.log(error);
-  }
-}
+  res.status(200).json({
+    users
+  });
+});
 
-const createNewUser = async (req, res) => {
-  try {
+const createNewUser = catchAsync(async (req, res, next) => {
+
   const {name, email, password, role} = req.body
 
   //Simple INSERT query
@@ -29,14 +27,11 @@ const createNewUser = async (req, res) => {
     })
 
   res.status(201).json({ newUser });
-  } catch (error) {
-    console.log(error)
-  }
-}
+  
+});
 
-const getUserByID = async (req, res) => {
+const getUserByID = catchAsync(async (req, res, next) => {
 
-  try {
 
     //middleware added new data to request - we detructure here
     const { user } = req
@@ -44,13 +39,10 @@ const getUserByID = async (req, res) => {
     res.status(200).json({
       user,
     });
-  } catch (error) {
-    console.log(error)
-  }
-}
+});
 
-const updateUser = async (req, res) => {
-  try {
+const updateUser = catchAsync(async (req, res, next)  => {
+
     const { user } = req
 
     //fields to update
@@ -59,22 +51,16 @@ const updateUser = async (req, res) => {
     await user.update({name, email})
 
     res.status(200).json({ status: 'success' });
-  } catch (error) {
-    console.log(error);
-  }
-}
+});
 
-const deleteUser = async (req, res) => {
-  try {
+const deleteUser = catchAsync(async (req, res, next)  => {
+
     const { user } = req
     
     await user.update({status: 'deleted'})
 
     res.status(200).json({ status: 'success' });
-  } catch (error) {
-    console.log(error);
-  }
-}
+});
 
 module.exports = {
   getAllUsers,
