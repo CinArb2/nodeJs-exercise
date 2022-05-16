@@ -1,6 +1,9 @@
 //import express module
 const express = require('express')
 
+//limit repeated requests to public APIs
+const rateLimit = require('express-rate-limit');
+
 // Utils - connecting to database
 const { db } = require('./utils/database');
 
@@ -21,6 +24,16 @@ const app = express()
 // Enable incoming JSON data
 app.use(express.json());
 
+
+// Limit IP requests
+const limiter = rateLimit({
+  max: 10000,
+  windowMs: 1 * 60 * 60 * 1000, // 1 hr
+  message: 'Too many requests from this IP',
+});
+
+app.use(limiter);
+
 //ENDPOINTS
 //http://localhost:9000/api/v1/users - users endpoint
 app.use('/api/v1/users', usersRouter)
@@ -28,7 +41,7 @@ app.use('/api/v1/users', usersRouter)
 app.use('/api/v1/repairs', repairsRouter)
 
 
-//GLOBAL ERROR HANDLES
+//GLOBAL ERROR HANDLER
 app.use('*', globalErrorHandler)
 
 //autenticando base de datos

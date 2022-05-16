@@ -1,5 +1,7 @@
 const express = require('express');
 
+const {protectToken, protectRole} = require('../middlewares/users.middlewares')
+
 const { getAllPendingRepairs,
   createAppointment,
   getPendingRepairByID,
@@ -13,9 +15,13 @@ const {createRepairValidations, checkValidations } = require('../middlewares/val
 
 const router = express.Router()
 
-router.route('/')
-  .get(getAllPendingRepairs)
-  .post(createRepairValidations, checkValidations, createAppointment)
+router.use('/', protectToken)
+
+router.post('/', createRepairValidations, checkValidations, createAppointment)
+
+router.use('/', protectRole)
+
+router.get('/', getAllPendingRepairs)
 
 router.route('/:id')
   .get(serviceExists, getPendingRepairByID)

@@ -4,25 +4,30 @@ const { getAllUsers,
   createNewUser,
   getUserByID,
   updateUser,
-  deleteUser
+  deleteUser,
+  login
 } = require('../controllers/users.controllers')
 
 // Middlewares
-const {userExists} = require('../middlewares/users.middlewares')
+const { userExists,
+  protectToken,
+  protectAccountOwner,
+  protectRole} = require('../middlewares/users.middlewares')
 const {createUserValidations, checkValidations } = require('../middlewares/validations.middlewares')
 
 //creating router object
 const router = express.Router()
 
-//route() for those methods that share same endpoint
+router.post('/login', login)
+router.post('/', createUserValidations, checkValidations, createNewUser)
 
-router.route('/')
-  .get(getAllUsers)
-  .post(createUserValidations, checkValidations, createNewUser)
+router.use('/', protectToken)
+
+router.get('/', getAllUsers)
 
 router.route('/:id')
-  .get(userExists, getUserByID)
-  .patch(userExists, updateUser)
-  .delete(userExists, deleteUser)
+  .get(protectRole, userExists, getUserByID)
+  .patch(userExists, protectAccountOwner, updateUser)
+  .delete(userExists, protectAccountOwner, deleteUser)
 
 module.exports = {usersRouter: router}

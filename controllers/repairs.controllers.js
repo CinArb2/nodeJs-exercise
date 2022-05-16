@@ -18,13 +18,17 @@ const getAllPendingRepairs = catchAsync(async (req, res) => {
 });
 
 const createAppointment = catchAsync(async (req, res) => {
-  const { date,
-      userId,
+  const { userRequest } = req
+
+  const { date, computerNumber, comments} = req.body
+
+  const newAppointment = await Repair.create(
+    {
+      date,
+      userId: userRequest.id,
       computerNumber,
       comments
-    } = req.body
-
-  const newAppointment = await Repair.create({ date, userId,computerNumber, comments});
+    });
 
   res.status(201).json({ newAppointment });
 });
