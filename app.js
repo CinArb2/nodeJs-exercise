@@ -1,6 +1,9 @@
 //import express module
 const express = require('express')
-
+const helmet = require('helmet')
+const compression = require('compression')
+const morgan = require('morgan')
+require('dotenv').config()
 //limit repeated requests to public APIs
 const rateLimit = require('express-rate-limit');
 
@@ -24,6 +27,15 @@ const app = express()
 // Enable incoming JSON data
 app.use(express.json());
 
+//add security helment
+app.use(helmet())
+
+//compress responses
+app.use(compression())
+
+//log incoming request
+if(process.env.NODE_ENV === 'development') app.use(morgan('dev'))
+else app.use(morgan('combined'))
 
 // Limit IP requests
 const limiter = rateLimit({
